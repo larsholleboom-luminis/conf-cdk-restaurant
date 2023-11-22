@@ -7,12 +7,9 @@
     "Id": "/hostedzone/Z06873163273CF4U6DRBG",
     "Name": "cloud101.nl."
   },
-  "hosted-zone:account=531843824238:domainName=cloud101.nl:region=sa-east-1": {
-    "Id": "/hostedzone/Z06873163273CF4U6DRBG",
-    "Name": "cloud101.nl."
-  },
   "hosted-zone:account=531843824238:domainName=cloud101.nl:region=us-west-2": {
     "Id": "/hostedzone/Z06873163273CF4U6DRBG",
     "Name": "cloud101.nl."
   }
+
 }

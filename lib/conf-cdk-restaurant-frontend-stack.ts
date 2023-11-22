@@ -3,14 +3,16 @@ import {Construct} from 'constructs';
 import {Bucket, BucketAccessControl} from 'aws-cdk-lib/aws-s3';
 import {BucketDeployment, Source} from 'aws-cdk-lib/aws-s3-deployment';
 import * as path from 'path';
-import { CachePolicy, Distribution, OriginAccessIdentity} from 'aws-cdk-lib/aws-cloudfront';
-import { S3Origin} from 'aws-cdk-lib/aws-cloudfront-origins';
+import { AllowedMethods, CachePolicy, Distribution, OriginAccessIdentity} from 'aws-cdk-lib/aws-cloudfront';
+import { RestApiOrigin, S3Origin} from 'aws-cdk-lib/aws-cloudfront-origins';
 import {Certificate} from 'aws-cdk-lib/aws-certificatemanager';
 import {ARecord, HostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
 import {CloudFrontTarget} from 'aws-cdk-lib/aws-route53-targets';
+import { LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 
 interface ConfCdkRestaurantFrontendProps extends StackProps {
     confCdkRestaurantDistributionCertificate: Certificate;
+    eventApi: LambdaRestApi;
 }
 
 export class ConfCdkRestaurantFrontendStack extends Stack {
@@ -50,6 +52,13 @@ export class ConfCdkRestaurantFrontendStack extends Stack {
             },
             domainNames: [subdomain + '.cloud101.nl'],
             certificate: props?.confCdkRestaurantDistributionCertificate,
+            additionalBehaviors: {
+                '/api/*': {
+                    origin: new RestApiOrigin(props.eventApi),
+                    allowedMethods: AllowedMethods.ALLOW_ALL,
+                    cachePolicy: CachePolicy.CACHING_DISABLED,
+                }
+            }
         });
 
         new ARecord(this, 'AliasRecord', {
