@@ -10,5 +10,5 @@ const app = new cdk.App();
 new ConfCdkPipeline(
     app,
     'Pipeline',
-    {env: {region: 'eu-west-1', account: '531843824238'}}
+    {env: {region: 'us-west-2', account: '531843824238'}}
 );

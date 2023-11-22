@@ -13,8 +13,8 @@ export class ConfCdkPipeline extends cdk.Stack {
 
         this.subdomain = subdomain;
 
-        const pipeline = new CodePipeline(this, this.subdomain + '-ConfCdkPipeline', {
-            pipelineName: this.subdomain + '-ConfCdkPipeline',
+        const pipeline = new CodePipeline(this, this.subdomain + 'Pipeline', {
+            pipelineName: this.subdomain + 'Pipeline',
             synth: new ShellStep('Synth', {
                 input: CodePipelineSource.gitHub(`${GitHubHandle}/${GitHubRepo}`, 'main'),
                 // Build before testing because the test checks if the built files can be deployed too
