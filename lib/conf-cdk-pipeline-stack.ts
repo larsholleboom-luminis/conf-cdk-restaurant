@@ -14,8 +14,8 @@ export class ConfCdkPipeline extends cdk.Stack {
 
         this.subdomain = subdomain;
 
-        const pipeline = new CodePipeline(this, this.subdomain + '-ConfCdkPipeline', {
-            pipelineName: this.subdomain + '-ConfCdkPipeline',
+        const pipeline = new CodePipeline(this, this.subdomain + 'Pipeline', {
+            pipelineName: this.subdomain + 'Pipeline',
             synth: new ShellStep('Synth', {
                 input: CodePipelineSource.gitHub(`${GitHubHandle}/${GitHubRepo}`, 'main'),
                 // Build before testing because the test checks if the built files can be deployed too
@@ -42,13 +42,11 @@ export class ConfCdkPipelineStage extends cdk.Stage {
             },
         }, subdomain);
 
-        // Todo: uncomment this line (this makes sure the stack is deployed via AWS CodePipeline)
-        // const confCdkRestaurantEventApiStack = new ConfCdkRestaurantEventApiStack(this, subdomain + '-confCdkRestaurantEventApiStack', props, subdomain);
+        const confCdkRestaurantEventApiStack = new ConfCdkRestaurantEventApiStack(this, subdomain + '-confCdkRestaurantEventApiStack', props, subdomain);
 
         const confCdkRestaurantFrontendStack = new ConfCdkRestaurantFrontendStack(this, subdomain + '-confCdkRestaurantFrontendStack', {
             ...props,
-            // Todo: uncomment this line to provide the API to the frontend stack so it can add an endpoint to the distribution
-            // eventApi: confCdkRestaurantEventApiStack.eventLambdaApi,
+            eventApi: confCdkRestaurantEventApiStack.eventLambdaApi,
             confCdkRestaurantDistributionCertificate: confCdkRestaurantGlobalStack.confCdkRestaurantDistributionCertificate,
             crossRegionReferences: true,
         }, subdomain);

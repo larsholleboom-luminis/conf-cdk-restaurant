@@ -12,8 +12,7 @@ import {LambdaRestApi} from "aws-cdk-lib/aws-apigateway";
 
 interface ConfCdkRestaurantFrontendProps extends StackProps {
     confCdkRestaurantDistributionCertificate: Certificate;
-    // Todo: uncomment this property when we have an event api
-    // eventApi: LambdaRestApi;
+    eventApi: LambdaRestApi;
 }
 
 export class ConfCdkRestaurantFrontendStack extends Stack {
@@ -53,7 +52,13 @@ export class ConfCdkRestaurantFrontendStack extends Stack {
             },
             domainNames: [subdomain + '.cloud101.nl'],
             certificate: props?.confCdkRestaurantDistributionCertificate,
-            // Todo: Add 'additionalBehaviors' here to point /api/* towards our API Gateway
+            additionalBehaviors: {
+                '/api/*': {
+                    origin: new RestApiOrigin(props.eventApi),
+                    allowedMethods: AllowedMethods.ALLOW_ALL,
+                    cachePolicy: CachePolicy.CACHING_DISABLED,
+                }
+            }
         });
 
         new ARecord(this, 'AliasRecord', {
